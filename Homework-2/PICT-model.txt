@@ -1,6 +1,0 @@
-Font: Onyx, Palatino Linotype, Nyala, Old English Text MT, NSimSun
-Font style: Regular, Italic, Bold, Bold Italic
-Size: 8, 9, 10, 11, 12 
-Font color: Black
-Underline: (none)
-Effects: Strikethrough, Double Strikethrough, Superscript, Subscript, Shadow, Outline, Emboss, Engrave, Small caps, All caps, Hidden
