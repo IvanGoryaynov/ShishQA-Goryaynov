@@ -1,0 +1,242 @@
+{
+	"info": {
+		"_postman_id": "e5905bf5-6166-40e6-bc95-47cece5af259",
+		"name": "ShishQA-Goryaynov",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://ya.ru"
+			},
+			"response": []
+		},
+		{
+			"name": "Сreatemeta",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var resBody = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Set Variable\", function () {\r",
+							"    pm.environment.set(\"projectKey\", resBody.projects[1].key);\r",
+							"    pm.environment.set(\"IssueType\", resBody.projects[1].id);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/createmeta"
+			},
+			"response": []
+		},
+		{
+			"name": "create issue",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var rnd = Math.random();\r",
+							"pm.environment.set(\"summary\", \"Goryaynov-TestIssue_\" + rnd);\r",
+							"pm.environment.set(\"discription\", \"Император хранит\" + rnd); "
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"var resBody = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Set Isuue Id\", function () {\r",
+							"    pm.environment.set(\"issueId\", resBody.id);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"fields\": {\r\n    \"project\": { \r\n      \"key\": \"{{projectKey}}\"\r\n    },\r\n    \"summary\": \"{{summary}}\",\r\n    \"description\": \"{{discription}}\",\r\n    \"issuetype\": {\r\n      \"id\": \"{{IssueType}}\"\r\n    }\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{URL}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Getissueid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var resBody = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Summary & Description Tests\", function () {\r",
+							"    pm.expect(resBody.fields.summary).to.eql(pm.environment.get(\"summary\"));\r",
+							"    pm.expect(resBody.fields.description).to.eql(pm.environment.get(\"discription\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/{{issueId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "transitions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var resBody = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Status issue\", function () {\r",
+							"    pm.environment.set(\"transitId\", resBody.transitions[1].id);\r",
+							"    pm.environment.set(\"transitName\", resBody.transitions[1].name);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/{{issueId}}/transitions"
+			},
+			"response": []
+		},
+		{
+			"name": "{{URL}}/{{issueId}}/transitions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"transition\": {\r\n      \"id\": \"{{transitId}}\"\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{URL}}/{{issueId}}/transitions"
+			},
+			"response": []
+		},
+		{
+			"name": "Getissueid Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var resBody = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"transit Tests\", function () {\r",
+							"    pm.expect(resBody.fields.status.name).to.eql(pm.environment.get(\"transitName\"));\r",
+							"\r",
+							"});\r",
+							"pm.environment.unset(\"variable_key\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}/{{issueId}}"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": {
+			"username": "goryaynovivan42@gmail.com",
+			"password": "123456"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
